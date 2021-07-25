@@ -1,0 +1,131 @@
+/****** Includes ******/
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include "Zonen.h"
+
+/****** Defines ******/
+//#define ARDUINO_NANO // Care RAM Usage. Maybe Adafruit_SSD1306 cant be used, when too less RAM available.
+#define RASPPI_PICO
+
+#define SCREEN_WIDTH 128    // OLED display width, in pixels
+#define SCREEN_HEIGHT 64    // OLED display height, in pixels
+#define OLED_RESET 3        // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3D ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+
+#define ButtonPin1 6
+#define ButtonPin2 5
+#define ButtonPin3 4
+
+#ifdef ARDUINO_NANO
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+#endif
+#ifdef RASPPI_PICO
+MbedI2C IC2_1(16, 17);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &IC2_1, OLED_RESET);
+#endif
+
+/****** Globale Variablen ******/
+int selectedZone = 0;
+
+// example Example Screenzones
+// x, y, width, textSize, textColor, backgroundColor, content/value
+#define ARRAYLENGTH 7
+Zonen Screen_1[ARRAYLENGTH] = {
+    {0, 0, 90, 3, 1, 0, "Zone1"},
+    {0, 24, 64, 2, 1, 0, "Zone2"},
+    {64, 24, 64, 2, 1, 0, 3},
+    {0, 40, 64, 2, 1, 0, "Zone4"},
+    {64, 40, 64, 2, 1, 0, 5},
+    {0, 56, 64, 1, 1, 0, "Zone6"},
+    {64, 56, 64, 1, 1, 0, 7}};
+
+/************/
+
+void setup()
+{
+#ifdef ARDUINO_NANO
+    Serial.begin(115200);
+#endif
+
+    /****** PinModes ******/
+    pinMode(ButtonPin1, INPUT);
+    pinMode(ButtonPin2, INPUT);
+    pinMode(ButtonPin3, INPUT);
+
+    /************/
+
+    if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
+    {
+#ifdef ARDUINO_NANO
+        Serial.println(F("SSD1306 allocation failed"));
+#endif
+        /*digitalWrite(LED_BUILTIN, HIGH);
+        for (;;)
+            ; // Don't proceed, loop forever*/
+    }
+    else
+    {
+#ifdef ARDUINO_NANO
+        Serial.println(F("SSD1306 allocation successful"));
+#endif
+    }
+
+    // Screen Startup
+    display.display();
+    delay(2000); // Pause for 2 seconds
+    display.clearDisplay();
+    display.display();
+}
+
+void loop()
+{
+    showZones(Screen_1, ARRAYLENGTH);
+}
+
+void showZones(Zonen zzones[], int arrayLength)
+{
+    display.clearDisplay();
+    for (size_t i = 0; i < arrayLength; i++)
+    {
+        zzones[i].printZone(display);
+#ifdef ARDUINO_NANO
+        Serial.println(zzones[i].content);
+#endif
+    }
+    checkSelectedZone(arrayLength);
+    zzones[selectedZone].invert(display);
+    display.display();
+}
+
+void checkSelectedZone(unsigned int length)
+{
+    if (digitalRead(ButtonPin1))
+    {
+        selectedZone++;
+        if (selectedZone > length - 1)
+        {
+            selectedZone = 0;
+        }
+
+        while (digitalRead(ButtonPin1))
+        {
+            delay(5);
+        }
+    }
+    else if (digitalRead(ButtonPin2))
+    {
+    }
+    else if (digitalRead(ButtonPin3))
+    {
+        selectedZone--;
+        if (selectedZone < 0)
+        {
+            selectedZone = length - 1;
+        }
+        while (digitalRead(ButtonPin3))
+        {
+            delay(5);
+        }
+    }
+}
