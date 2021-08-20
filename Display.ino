@@ -27,6 +27,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2C_base, OLED_RESET);
 
 /****** Globale Variablen ******/
 int selectedZone = 0;
+unsigned int testno = 0;
 
 // example Example Screenzones
 // x, y, width, textSize, textColor, backgroundColor, content/value
@@ -44,6 +45,8 @@ Zonen Screen_1[ARRAYLENGTH] = {
 
 void setup()
 {
+
+    IC2_1.begin();
 #ifdef ARDUINO_NANO
     Serial.begin(115200);
 #endif
@@ -52,6 +55,8 @@ void setup()
     pinMode(ButtonPin1, INPUT);
     pinMode(ButtonPin2, INPUT);
     pinMode(ButtonPin3, INPUT);
+    pinMode(6, INPUT);
+    pinMode(13, OUTPUT);
 
     /************/
 
@@ -80,7 +85,29 @@ void setup()
 
 void loop()
 {
-    showZones(Screen_1, ARRAYLENGTH);
+    //showZones(Screen_1, ARRAYLENGTH);
+    display.clearDisplay();
+    display.setCursor(1, 1);
+    display.setTextSize(1);
+    display.setTextColor(1);
+    display.print("IC2");
+    display.display();
+    IC2_1.requestFrom(0x20, 6);
+    if (IC2_1.available())
+    {
+        display.setCursor(10, 10);
+        display.print("IC2_1 is Available Nr:");
+        display.println(testno);
+        testno++;
+        while (IC2_1.available())
+        {
+            char c = IC2_1.read(); // receive a byte as character
+            display.print(c);
+        }
+    }
+
+    display.display();
+    delay(2000);
 }
 
 void showZones(Zonen zzones[], int arrayLength)
@@ -115,6 +142,10 @@ void checkSelectedZone(unsigned int length)
     }
     else if (digitalRead(ButtonPin2))
     {
+        while (digitalRead(ButtonPin2))
+        {
+            delay(5);
+        }
     }
     else if (digitalRead(ButtonPin3))
     {
