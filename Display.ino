@@ -46,7 +46,6 @@ Zonen Screen_1[ARRAYLENGTH] = {
 void setup()
 {
 
-    IC2_1.begin();
 #ifdef ARDUINO_NANO
     Serial.begin(115200);
 #endif
