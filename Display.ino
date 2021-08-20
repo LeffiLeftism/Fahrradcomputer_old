@@ -85,7 +85,8 @@ void setup()
 
 void loop()
 {
-    //showZones(Screen_1, ARRAYLENGTH);
+    showZones(Screen_1, ARRAYLENGTH);
+    /*
     display.clearDisplay();
     display.setCursor(1, 1);
     display.setTextSize(1);
@@ -108,6 +109,7 @@ void loop()
 
     display.display();
     delay(2000);
+    */
 }
 
 void showZones(Zonen zzones[], int arrayLength)
