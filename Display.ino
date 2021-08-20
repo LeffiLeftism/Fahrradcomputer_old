@@ -21,9 +21,8 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #endif
 #ifdef RASPPI_PICO
-MbedI2C IC2_0(4, 5);
-MbedI2C IC2_1(14, 15);
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &IC2_0, OLED_RESET);
+MbedI2C I2C_base(4, 5);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2C_base, OLED_RESET);
 #endif
 
 /****** Globale Variablen ******/
