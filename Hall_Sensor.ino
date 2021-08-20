@@ -4,7 +4,7 @@
 #define RASPPI_PICO
 
 #ifdef RASPPI_PICO
-MbedI2C IC2_0(4, 5);
+MbedI2C IC2(4, 5);
 #endif
 
 #define SensorPin1 2 // Definiert den PIN, an welchem der Hallsensor angeschlossen wird. Dieser muss ein Interruptfähiger PIN sein!
@@ -13,8 +13,8 @@ HallSensor rpm_pedal;
 void setup()
 {
     pinMode(13, OUTPUT);
-    IC2_0.begin(0x20);                      // join i2c bus with address 0x20 (32)
-    IC2_0.onRequest(requestEvent);          // register event
+    IC2.begin(0x20);                      // join i2c bus with address 0x20 (32)
+    IC2.onRequest(requestEvent);          // register event
     // Voreinstellungen für den RPM-Sensor festlegen
     /*pinMode(SensorPin1, INPUT_PULLUP);                                       // Legt den Modus des Pins fest, an welchem der Sensor angeschlossen ist
     attachInterrupt(digitalPinToInterrupt(SensorPin1), interrupt_func, LOW); // Fügt dem Pin des Sensors eine Interrupt-Funktion hinzu, welche beim festgelegten Status des Pins ausgeführt wird
@@ -55,7 +55,7 @@ void loop()
 
 void requestEvent() {
     digitalWrite(13, HIGH);
-    IC2_0.write("hello ");       // respond with message of 6 bytes
+    IC2.write("hello ");       // respond with message of 6 bytes
     delay(500);
     digitalWrite(13, LOW);
 }
