@@ -10,19 +10,20 @@
 
 #define SCREEN_WIDTH 128    // OLED display width, in pixels
 #define SCREEN_HEIGHT 64    // OLED display height, in pixels
-#define OLED_RESET 3        // Reset pin # (or -1 if sharing Arduino reset pin)
+#define OLED_RESET 7        // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3D ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
-#define ButtonPin1 6
-#define ButtonPin2 5
-#define ButtonPin3 4
+#define ButtonPin1 27
+#define ButtonPin2 26
+#define ButtonPin3 20
 
 #ifdef ARDUINO_NANO
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #endif
 #ifdef RASPPI_PICO
-MbedI2C IC2_1(16, 17);
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &IC2_1, OLED_RESET);
+MbedI2C IC2_0(4, 5);
+MbedI2C IC2_1(14, 15);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &IC2_0, OLED_RESET);
 #endif
 
 /****** Globale Variablen ******/
@@ -102,10 +103,10 @@ void checkSelectedZone(unsigned int length)
 {
     if (digitalRead(ButtonPin1))
     {
-        selectedZone++;
-        if (selectedZone > length - 1)
+        selectedZone--;
+        if (selectedZone < 0)
         {
-            selectedZone = 0;
+            selectedZone = length - 1;
         }
 
         while (digitalRead(ButtonPin1))
@@ -118,10 +119,10 @@ void checkSelectedZone(unsigned int length)
     }
     else if (digitalRead(ButtonPin3))
     {
-        selectedZone--;
-        if (selectedZone < 0)
+        selectedZone++;
+        if (selectedZone > length - 1)
         {
-            selectedZone = length - 1;
+            selectedZone = 0;
         }
         while (digitalRead(ButtonPin3))
         {
