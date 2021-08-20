@@ -56,6 +56,8 @@ void setup()
     pinMode(ButtonPin1, INPUT);
     pinMode(ButtonPin2, INPUT);
     pinMode(ButtonPin3, INPUT);
+    pinMode(6, INPUT);
+    pinMode(13, OUTPUT);
 
     /************/
 
@@ -85,12 +87,17 @@ void setup()
 void loop()
 {
     //showZones(Screen_1, ARRAYLENGTH);
-    IC2_1.requestFrom(0x20, 6);
     display.clearDisplay();
+    display.setCursor(1, 1);
+    display.setTextSize(1);
+    display.setTextColor(1);
+    display.print("IC2");
+    display.display();
+    IC2_1.requestFrom(0x20, 6);
     if (IC2_1.available())
     {
         display.setCursor(10, 10);
-        display.print("IC2_1 is Available No:");
+        display.print("IC2_1 is Available Nr:");
         display.println(testno);
         testno++;
         while (IC2_1.available())
