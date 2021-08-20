@@ -1,10 +1,19 @@
 #include "hall-Sensor.h"
+#include <Wire.h>
+
+#define RASPPI_PICO
+
+#ifdef RASPPI_PICO
+MbedI2C IC2_0(4, 5);
+#endif
 
 #define SensorPin1 2 // Definiert den PIN, an welchem der Hallsensor angeschlossen wird. Dieser muss ein Interruptfähiger PIN sein!
 HallSensor rpm_pedal;
 
 void setup()
 {
+    IC2_0.begin(0x20);                      // join i2c bus with address 0x20 (32)
+    IC2_0.onRequest(requestEvent);          // register event
     // Voreinstellungen für den RPM-Sensor festlegen
     pinMode(SensorPin1, INPUT_PULLUP);                                       // Legt den Modus des Pins fest, an welchem der Sensor angeschlossen ist
     attachInterrupt(digitalPinToInterrupt(SensorPin1), interrupt_func, LOW); // Fügt dem Pin des Sensors eine Interrupt-Funktion hinzu, welche beim festgelegten Status des Pins ausgeführt wird
@@ -40,4 +49,8 @@ void interrupt_func() // Funktion, welche bei einem Interrupt ausgeführt wird.
     {
         delay(5);
     }
+}
+
+void requestEvent() {
+    Wire.write("hello ");       // respond with message of 6 bytes
 }
