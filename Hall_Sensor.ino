@@ -56,6 +56,5 @@ void loop()
 void requestEvent() {
     digitalWrite(13, HIGH);
     IC2.write("hello ");       // respond with message of 6 bytes
-    delay(500);
     digitalWrite(13, LOW);
 }
