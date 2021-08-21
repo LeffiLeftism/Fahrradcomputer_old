@@ -84,31 +84,29 @@ void setup()
 
 void loop()
 {
-    showZones(Screen_1, ARRAYLENGTH);
-    /*
+    //showZones(Screen_1, ARRAYLENGTH);
     display.clearDisplay();
     display.setCursor(1, 1);
     display.setTextSize(1);
     display.setTextColor(1);
     display.print("IC2");
     display.display();
-    IC2_1.requestFrom(0x20, 6);
-    if (IC2_1.available())
+    I2C_base.requestFrom(0x20, 6);
+    if (I2C_base.available())
     {
         display.setCursor(10, 10);
         display.print("IC2_1 is Available Nr:");
         display.println(testno);
         testno++;
-        while (IC2_1.available())
+        while (I2C_base.available())
         {
-            char c = IC2_1.read(); // receive a byte as character
+            char c = I2C_base.read(); // receive a byte as character
             display.print(c);
         }
     }
 
     display.display();
-    delay(2000);
-    */
+    delay(500);
 }
 
 void showZones(Zonen zzones[], int arrayLength)
