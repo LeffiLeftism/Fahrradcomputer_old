@@ -90,23 +90,27 @@ void loop()
     display.setTextSize(1);
     display.setTextColor(1);
     display.print("IC2");
-    display.display();
+    //display.display();
     I2C_base.requestFrom(0x20, 6);
     if (I2C_base.available())
     {
         display.setCursor(10, 10);
         display.print("IC2_1 is Available Nr:");
         display.println(testno);
-        testno++;
+        String cstring;
         while (I2C_base.available())
         {
             char c = I2C_base.read(); // receive a byte as character
-            display.print(c);
+            cstring += c;
         }
-    }
+        if (cstring == "hello ")
+        {
+            testno++;
+        }
 
-    display.display();
-    delay(500);
+        display.print(cstring);
+        display.display();
+    }
 }
 
 void showZones(Zonen zzones[], int arrayLength)
