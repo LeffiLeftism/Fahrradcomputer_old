@@ -58,6 +58,6 @@ void interrupt_func() // Funktion, welche bei einem Interrupt ausgeführt wird.
 void requestEvent()
 {
     digitalWrite(13, HIGH);
-    IC2.write(int(rpm_pedal.average_value)); // respond with message of 2 bytes
+    IC2.write(char(1)); // respond with message of 2 bytes
     digitalWrite(13, LOW);
 }
