@@ -16,8 +16,8 @@ public:
     bool calcDiffAverage = false;  // Legt fest, ob der Mittelwert der Summe oder der Mittelwert der Differenz zwischen den Werten berechnet wird (false -> Summenmittelwert, true -> Differenzmittelwert)
     unsigned char SensorPin;       // Legt den Ausgelesenen Pin fest
     bool fractionType = true;      // Legt fest, ob der average_value bei der Umrechnung im Nenner (0) oder Zähler(1) steht.
-    double adjustmentMulti = 1;    // Multiplikator zur Umrechnung des Sensorwertes in die richtige Einheit
-    volatile double average_value; // Hält den letzten berechneten Mittelwert fest
+    float adjustmentMulti = 1;    // Multiplikator zur Umrechnung des Sensorwertes in die richtige Einheit
+    float average_value; // Hält den letzten berechneten Mittelwert fest
     bool interrupt_active = false; // Hält fest, ob ein Interrupt am SensorPin1 ausgelöst wurde
 
     void newValue(long ExtraValue)
@@ -89,7 +89,7 @@ public:
                 }
                 sumDif += dif;
             }
-            average_value = double(sumDif) / double(COUNT_VALUES - 1);
+            average_value = float(sumDif) / float(COUNT_VALUES - 1);
             if (fractionType)
             {
                 average_value *= adjustmentMulti;
@@ -109,9 +109,7 @@ public:
             {
                 sum += values[i];
             }
-            average_value = double(sum) / double(COUNT_VALUES);
+            average_value = float(sum) / float(COUNT_VALUES);
         }
-        Serial.println("Sensor Class");
-        Serial.println(average_value);
     }
 };
