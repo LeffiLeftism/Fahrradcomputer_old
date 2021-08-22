@@ -91,7 +91,7 @@ void loop()
     display.setTextColor(1);
     display.print("IC2");
     //display.display();
-    I2C_base.requestFrom(0x20, 6);
+    I2C_base.requestFrom(0x20, 1);
     if (I2C_base.available())
     {
         display.setCursor(10, 10);
@@ -102,10 +102,6 @@ void loop()
         {
             char c = I2C_base.read(); // receive a byte as character
             cstring += c;
-        }
-        if (cstring == "hello ")
-        {
-            testno++;
         }
 
         display.print(cstring);
