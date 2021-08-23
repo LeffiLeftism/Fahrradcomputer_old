@@ -60,13 +60,7 @@ void interrupt_func() // Funktion, welche bei einem Interrupt ausgeführt wird.
 
 void requestEvent()
 {
-    digitalWrite(13, HIGH);
-    char data;
-    String sensor_msg = floatToString(rpm_pedal.average_value, 1, 4);
-    sensor_msg = "12.4";
-    sensor_msg.toCharArray(&data, 4);
-    IC2.write(data); // respond with message of 4 bytes
-    digitalWrite(13, LOW);
+    IC2.print(floatToString(rpm_pedal.average_value, 1, 5)); // respond with message of 4 bytes
 }
 
 //char(floatToString(rpm_pedal.average_value, 1, 4))
