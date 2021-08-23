@@ -1,5 +1,8 @@
+#include "Arduino.h"
 #include "hall-Sensor.h"
+#include "I2C_functions.h"
 #include <Wire.h>
+#include <string>
 
 #define SENSOR_ADDR 0x20
 #define RASPPI_PICO
@@ -58,6 +61,12 @@ void interrupt_func() // Funktion, welche bei einem Interrupt ausgeführt wird.
 void requestEvent()
 {
     digitalWrite(13, HIGH);
-    IC2.write(char(1)); // respond with message of 2 bytes
+    char data;
+    String sensor_msg = floatToString(rpm_pedal.average_value, 1, 4);
+    sensor_msg = "12.4";
+    sensor_msg.toCharArray(&data, 4);
+    IC2.write(data); // respond with message of 4 bytes
     digitalWrite(13, LOW);
 }
+
+//char(floatToString(rpm_pedal.average_value, 1, 4))
