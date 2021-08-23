@@ -84,28 +84,22 @@ void setup()
 
 void loop()
 {
-    //showZones(Screen_1, ARRAYLENGTH);
+    showZones(Screen_1, ARRAYLENGTH);
     display.clearDisplay();
     display.setCursor(1, 1);
     display.setTextSize(1);
     display.setTextColor(1);
     display.print("IC2");
     //display.display();
-    I2C_base.requestFrom(0x20, 4);
-    if (I2C_base.available())
-    {
-        display.setCursor(10, 10);
-        display.print("IC2_1 is Available Nr:");
-        display.println(testno);
-        String cstring;
+    I2C_base.requestFrom(0x20, 5); // Request 5 Byte from I2C-ADDR 0x20
+    if(I2C_base.available()) {
+        String i2c_answer;
         while (I2C_base.available())
         {
             char c = I2C_base.read(); // receive a byte as character
-            cstring += c;
+            i2c_answer += c;
         }
-
-        display.print(cstring);
-        display.display();
+        Screen_1[2].setContent(i2c_answer);
     }
 }
 
