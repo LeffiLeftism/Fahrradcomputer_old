@@ -91,7 +91,7 @@ void loop()
     display.setTextColor(1);
     display.print("IC2");
     //display.display();
-    I2C_base.requestFrom(0x20, 1);
+    I2C_base.requestFrom(0x20, 4);
     if (I2C_base.available())
     {
         display.setCursor(10, 10);
