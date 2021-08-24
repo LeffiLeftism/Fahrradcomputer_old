@@ -14,11 +14,12 @@ public:
     int textColor;       // 0 = Black, 1 = White, 2 = Inverse
     int backgroundColor; // 0 = Black, 1 = White, 2 = Inverse
     String content;
-    double value;
-    bool b_value; // defines, if content or value will be print
+    double value = 0;
+    uint8_t decimals = 0;
+    bool selectable;
 
 public:
-    Zonen(int zx, int zy, int zwidth, int ztextSize, int ztextColor, int zbackgroundColor, String zcontent) // Constructor
+    Zonen(int zx, int zy, int zwidth, int ztextSize, int ztextColor, int zbackgroundColor, String zcontent, bool zselectable) // Constructor
     {
         x = zx;
         y = zy;
@@ -28,9 +29,9 @@ public:
         textColor = ztextColor;
         backgroundColor = zbackgroundColor;
         content = zcontent;
-        b_value = false;
+        selectable = zselectable;
     }
-    Zonen(int zx, int zy, int zwidth, int ztextSize, int ztextColor, int zbackgroundColor, double zvalue) // Constructor
+    Zonen(int zx, int zy, int zwidth, int ztextSize, int ztextColor, int zbackgroundColor, double zvalue, uint8_t zdecimals, bool zselectable) // Constructor
     {
         x = zx;
         y = zy;
@@ -40,17 +41,29 @@ public:
         textColor = ztextColor;
         backgroundColor = zbackgroundColor;
         value = zvalue;
-        b_value = true;
+        decimals = zdecimals;
+        content = String(zvalue, zdecimals);
+        selectable = zselectable;
     }
-    void setContent(String zcontent)
+    void setContent(String zcontent, bool convertToValue)
     {
+        if (convertToValue)
+        {
+            String valueStr;
+            for (uint8_t i = 0; i < zcontent.length(); i++)
+            {
+                if (isDigit(zcontent[i]))
+                {
+                    for (uint8_t n = i; n < zcontent.length(); n++)
+                    {
+                        valueStr += zcontent[n];
+                    }
+                    i = zcontent.length();
+                }
+            }
+            value = valueStr.toDouble();
+        }
         content = zcontent;
-        b_value = false;
-    }
-    void setValue(double zvalue)
-    {
-        value = zvalue;
-        b_value = true;
     }
     void printZone(Adafruit_SSD1306 &zdisplay)
     {
@@ -58,14 +71,7 @@ public:
         zdisplay.setCursor(x, y);
         zdisplay.setTextSize(textSize);
         zdisplay.setTextColor(textColor);
-        if (b_value)
-        {
-            zdisplay.print(value);
-        }
-        else
-        {
-            zdisplay.print(content);
-        }
+        zdisplay.print(content);
     }
     void invert(Adafruit_SSD1306 &zdisplay)
     {
