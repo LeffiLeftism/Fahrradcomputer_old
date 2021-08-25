@@ -2,17 +2,14 @@
 #include "hall-Sensor.h"
 #include "I2C_functions.h"
 #include <Wire.h>
-#include <string>
 
 #define SENSOR_ADDR 0x20
-#define RASPPI_PICO
-
-#ifdef RASPPI_PICO
 MbedI2C IC2(4, 5);
-#endif
 
 #define SensorPin1 2 // Definiert den PIN, an welchem der Hallsensor angeschlossen wird. Dieser muss ein Interruptfähiger PIN sein!
-HallSensor rpm_pedal;
+#define MAGNETS 1    // Definiert die Anzahl der der verwendeten Magneten
+
+HallSensor rpm_pedal("Pedal-RPM", SensorPin1, 60000 / MAGNETS);
 
 void setup()
 {
@@ -20,36 +17,30 @@ void setup()
     IC2.begin(SENSOR_ADDR);      // join i2c bus with SENSOR_ADDR
     IC2.onRequest(requestEvent); // register event
 
-    // Voreinstellungen für den RPM-Sensor festlegen
-    pinMode(SensorPin1, INPUT_PULLUP);                                       // Legt den Modus des Pins fest, an welchem der Sensor angeschlossen ist
+    pinMode(SensorPin1, INPUT);                                              // Legt den Modus des Pins fest, an welchem der Sensor angeschlossen ist
     attachInterrupt(digitalPinToInterrupt(SensorPin1), interrupt_func, LOW); // Fügt dem Pin des Sensors eine Interrupt-Funktion hinzu, welche beim festgelegten Status des Pins ausgeführt wird
-    rpm_pedal.SensorPin = SensorPin1;
-    rpm_pedal.calcDiffAverage = true;
-    rpm_pedal.fractionType = 0;
-    rpm_pedal.adjustmentMulti = 60000 / 1; // [ms/U] -> [U/min]  / Anzahl der Magneten
 }
 
 void loop()
 {
     delay(100);
-    if (rpm_pedal.interrupt_active)
     /*
         Wenn der Interrupt_1 ausgelöst wurde, wird beim nächsten Durchlauf
         ein neuer Zeitwert dem RPM-Sensor hinzugefügt und die neue Drehzahl erneut berechnet.
     */
+    if (rpm_pedal.interrupt_active)
     {
-        noInterrupts(); // Deaktiviert Interrupts während der Berechnung
         rpm_pedal.newValue(millis());
         rpm_pedal.calculateAverage();
         rpm_pedal.interrupt_active = false;
-        interrupts(); // Aktiviert Interrupts wieder, nachdem die Berechnungen abgeschlossen sind
     }
+    rpm_pedal.checkTimeout();
 }
 
-void interrupt_func() // Funktion, welche bei einem Interrupt ausgeführt wird.
 /*
     Diese Funktion wird ausgeführt, wenn der Interrupt am SensorPin1 ausgelöst wird.
 */
+void interrupt_func()
 {
     rpm_pedal.interrupt_active = true;
     while (digitalRead(SensorPin1) == 0)
@@ -60,7 +51,5 @@ void interrupt_func() // Funktion, welche bei einem Interrupt ausgeführt wird.
 
 void requestEvent()
 {
-    IC2.print(floatToString(rpm_pedal.average_value, 1, 5)); // respond with message of 4 bytes
+    IC2.print(floatToString(rpm_pedal.average_value, 1, 5)); // respond with message of 5 bytes
 }
-
-//char(floatToString(rpm_pedal.average_value, 1, 4))
