@@ -1,3 +1,5 @@
+// Testplace for Sensor with the Digispark v3
+
 #include "Arduino.h"
 #include "hall-Sensor.h"
 #include "I2C_functions.h"
