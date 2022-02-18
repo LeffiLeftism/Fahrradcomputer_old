@@ -1,3 +1,4 @@
+// Converts a float into a string with given decimals and stringlength
 String floatToString(float number, uint8_t decimal_length, uint8_t goalStringLength) {
   if(number < 0) {
     number *= -1;
