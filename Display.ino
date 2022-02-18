@@ -220,7 +220,7 @@ void showZones(Zonen zzones[], int arrayLength)
         }
         bikeAnimationTimer = millis();
     }
-    else
+    else if (mainscreen[3].value == 0.0)
     {
         bikeAnimationBitmap = 0;
     }
