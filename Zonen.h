@@ -31,20 +31,6 @@ public:
         content = zcontent;
         selectable = zselectable;
     }
-    Zonen(int zx, int zy, int zwidth, int ztextSize, int ztextColor, int zbackgroundColor, double zvalue, uint8_t zdecimals, bool zselectable) // Constructor
-    {
-        x = zx;
-        y = zy;
-        width = zwidth;
-        height = ztextSize * 7 + 1;
-        textSize = ztextSize;
-        textColor = ztextColor;
-        backgroundColor = zbackgroundColor;
-        value = zvalue;
-        decimals = zdecimals;
-        content = String(zvalue, zdecimals);
-        selectable = zselectable;
-    }
     void setContent(String zcontent, bool convertToValue)
     {
         if (convertToValue)
